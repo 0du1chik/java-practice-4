@@ -6,24 +6,55 @@ import java.util.Objects;
  * Клас, що описує телефон.
  */
 public class Phone {
+    private static int objectCount = 0;
+
     private String brand;
     private String model;
     private double price;
     private int ramGb;
+    private PhoneType type;
 
     /**
-     * Конструктор класу Phone з перевіркою параметрів.
+     * Конструктор з параметрами.
      *
-     * @param brand назва бренду (не порожня)
-     * @param model назва моделі (не порожня)
-     * @param price ціна ($) (більше 0)
-     * @param ramGb обсяг OЗП у ГБ (більше 0)
+     * @param brand назва бренду
+     * @param model назва моделі
+     * @param price ціна ($)
+     * @param ramGb обсяг ОЗП (ГБ)
+     * @param type тип телефону
      */
-    public Phone(String brand, String model, double price, int ramGb) {
+    public Phone(String brand, String model, double price, int ramGb, PhoneType type) {
         setBrand(brand);
         setModel(model);
         setPrice(price);
         setRamGb(ramGb);
+        setType(type);
+        objectCount++;
+    }
+
+    /**
+     * Конструктор копіювання.
+     *
+     * @param other об'єкт Phone для копіювання
+     */
+    public Phone(Phone other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Об'єкт для копіювання не може бути null.");
+        }
+        this.brand = other.brand;
+        this.model = other.model;
+        this.price = other.price;
+        this.ramGb = other.ramGb;
+        this.type = other.type;
+        objectCount++;
+    }
+
+    public static int getObjectCount() {
+        return objectCount;
+    }
+
+    public static void resetObjectCount() {
+        objectCount = 0;
     }
 
     public String getBrand() {
@@ -70,6 +101,17 @@ public class Phone {
         this.ramGb = ramGb;
     }
 
+    public PhoneType getType() {
+        return type;
+    }
+
+    public void setType(PhoneType type) {
+        if (type == null) {
+            throw new IllegalArgumentException("Тип телефону не може бути null.");
+        }
+        this.type = type;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -78,12 +120,13 @@ public class Phone {
         return Double.compare(phone.price, price) == 0 &&
                 ramGb == phone.ramGb &&
                 Objects.equals(brand, phone.brand) &&
-                Objects.equals(model, phone.model);
+                Objects.equals(model, phone.model) &&
+                type == phone.type;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(brand, model, price, ramGb);
+        return Objects.hash(brand, model, price, ramGb, type);
     }
 
     @Override
@@ -93,6 +136,7 @@ public class Phone {
                 ", model='" + model + '\'' +
                 ", price=" + price +
                 ", ramGb=" + ramGb +
+                ", type=" + type.getDisplayName() +
                 '}';
     }
 }
