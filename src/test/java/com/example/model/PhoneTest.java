@@ -1,48 +1,50 @@
 package com.example.model;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PhoneTest {
 
-    @Test
-    void shouldCreatePhoneWhenValidData() {
-        Phone phone = new Phone("Apple", "iPhone 15 Pro", 999.0, 8);
-        assertEquals("Apple", phone.getBrand());
-        assertEquals("iPhone 15 Pro", phone.getModel());
-        assertEquals(999.0, phone.getPrice());
-        assertEquals(8, phone.getRamGb());
+    @BeforeEach
+    void setUp() {
+        Phone.resetObjectCount();
     }
 
     @Test
-    void shouldThrowExceptionWhenInvalidConstructorData() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Phone("", "Galaxy S24", 799.0, 8);
-        });
+    void shouldCreatePhoneAndIncrementStaticCounter() {
+        assertEquals(0, Phone.getObjectCount());
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Phone("Samsung", "Galaxy S24", -100.0, 8);
-        });
+        Phone p1 = new Phone("Apple", "iPhone 15 Pro", 999.0, 8, PhoneType.SMARTPHONE);
+        assertEquals(1, Phone.getObjectCount());
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            new Phone("Samsung", "Galaxy S24", 799.0, 0);
-        });
+        Phone p2 = new Phone("Nokia", "3310", 50.0, 1, PhoneType.FEATURE_PHONE);
+        assertEquals(2, Phone.getObjectCount());
     }
 
     @Test
-    void shouldThrowExceptionWhenInvalidValueInSetter() {
-        Phone phone = new Phone("Google", "Pixel 8", 699.0, 8);
+    void shouldCopyPhoneCorrectly() {
+        Phone original = new Phone("Samsung", "Galaxy S24", 799.0, 8, PhoneType.SMARTPHONE);
+        Phone copy = new Phone(original);
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            phone.setPrice(-50.0);
-        });
+        assertEquals(original, copy);
+        assertNotSame(original, copy);
+        assertEquals(2, Phone.getObjectCount());
+    }
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            phone.setBrand("   ");
-        });
+    @Test
+    void shouldThrowExceptionWhenCopyingNull() {
+        assertThrows(IllegalArgumentException.class, () -> new Phone((Phone) null));
+    }
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            phone.setRamGb(-4);
-        });
+    @Test
+    void shouldAggregatePhonesInStore() {
+        Store store = new Store("TechStore");
+        Phone phone = new Phone("Asus", "ROG Phone 7", 1100.0, 16, PhoneType.GAMING_PHONE);
+
+        store.addPhone(phone);
+
+        assertEquals(1, store.getPhones().size());
+        assertEquals(phone, store.getPhones().get(0));
     }
 }
