@@ -6,8 +6,6 @@ import java.util.Objects;
  * Клас, що описує телефон.
  */
 public class Phone {
-    private static int objectCount = 0;
-
     private String brand;
     private String model;
     private double price;
@@ -29,7 +27,6 @@ public class Phone {
         setPrice(price);
         setRamGb(ramGb);
         setType(type);
-        objectCount++;
     }
 
     /**
@@ -46,15 +43,6 @@ public class Phone {
         this.price = other.price;
         this.ramGb = other.ramGb;
         this.type = other.type;
-        objectCount++;
-    }
-
-    public static int getObjectCount() {
-        return objectCount;
-    }
-
-    public static void resetObjectCount() {
-        objectCount = 0;
     }
 
     public String getBrand() {
