@@ -1,50 +1,37 @@
 package com.example.model;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PhoneTest {
 
-    @BeforeEach
-    void setUp() {
-        Phone.resetObjectCount();
+    @Test
+    void shouldCreateSmartPhoneCorrectly() {
+        SmartPhone smartPhone = new SmartPhone("Apple", "iPhone 15 Pro", 999.0, 8, PhoneType.SMARTPHONE, "iOS");
+        assertEquals("iOS", smartPhone.getOperatingSystem());
+        assertEquals("Apple", smartPhone.getBrand());
     }
 
     @Test
-    void shouldCreatePhoneAndIncrementStaticCounter() {
-        assertEquals(0, Phone.getObjectCount());
-
-        Phone p1 = new Phone("Apple", "iPhone 15 Pro", 999.0, 8, PhoneType.SMARTPHONE);
-        assertEquals(1, Phone.getObjectCount());
-
-        Phone p2 = new Phone("Nokia", "3310", 50.0, 1, PhoneType.FEATURE_PHONE);
-        assertEquals(2, Phone.getObjectCount());
+    void shouldCreateKeypadPhoneCorrectly() {
+        KeypadPhone keypadPhone = new KeypadPhone("Nokia", "3310", 40.0, 1, PhoneType.FEATURE_PHONE, true);
+        assertTrue(keypadPhone.isHasTorch());
+        assertEquals("Nokia", keypadPhone.getBrand());
     }
 
     @Test
-    void shouldCopyPhoneCorrectly() {
-        Phone original = new Phone("Samsung", "Galaxy S24", 799.0, 8, PhoneType.SMARTPHONE);
-        Phone copy = new Phone(original);
-
-        assertEquals(original, copy);
-        assertNotSame(original, copy);
-        assertEquals(2, Phone.getObjectCount());
+    void shouldThrowExceptionWhenInvalidSmartPhoneData() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            new SmartPhone("Samsung", "S24", 800.0, 8, PhoneType.SMARTPHONE, "");
+        });
     }
 
     @Test
-    void shouldThrowExceptionWhenCopyingNull() {
-        assertThrows(IllegalArgumentException.class, () -> new Phone((Phone) null));
-    }
+    void shouldDemonstratePolymorphism() {
+        Phone base = new Phone("Generic", "Phone", 100.0, 2, PhoneType.FEATURE_PHONE);
+        Phone smart = new SmartPhone("Google", "Pixel 8", 699.0, 8, PhoneType.SMARTPHONE, "Android");
 
-    @Test
-    void shouldAggregatePhonesInStore() {
-        Store store = new Store("TechStore");
-        Phone phone = new Phone("Asus", "ROG Phone 7", 1100.0, 16, PhoneType.GAMING_PHONE);
-
-        store.addPhone(phone);
-
-        assertEquals(1, store.getPhones().size());
-        assertEquals(phone, store.getPhones().get(0));
+        assertTrue(smart instanceof Phone);
+        assertNotEquals(base.toString(), smart.toString());
     }
 }
