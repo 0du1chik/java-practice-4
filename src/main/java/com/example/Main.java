@@ -1,28 +1,30 @@
 package com.example;
 
+import com.example.model.KeypadPhone;
 import com.example.model.Phone;
 import com.example.model.PhoneType;
-import com.example.model.Store;
+import com.example.model.SmartPhone;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * Драйвер-клас із графічною інформаційною шапкою та меню.
+ * Драйвер-клас для демонстрації успадкування та поліморфізму.
  */
 public class Main {
     private static final Scanner scanner = new Scanner(System.in);
-    private static final Store store = new Store("Мобільний Світ");
+    private static final ArrayList<Phone> phoneList = new ArrayList<>();
 
     public static void main(String[] args) {
         printHeader();
         boolean running = true;
 
         while (running) {
-            System.out.println("\n=== МЕНЮ УПРАВЛІННЯ (ПРАКТИЧНА №6) ===");
-            System.out.println("1. Додати новий телефон до магазину");
-            System.out.println("2. Створити копію останнього телефону (конструктор копіювання)");
-            System.out.println("3. Вивести інформацію про магазин та всі телефони");
-            System.out.println("4. Показати кількість створених об'єктів (static counter)");
+            System.out.println("\n=== МЕНЮ УПРАВЛІННЯ (ПРАКТИЧНА №7 - ПОЛІМОРФІЗМ) ===");
+            System.out.println("1. Додати базовий телефон (Phone)");
+            System.out.println("2. Додати смартфон (SmartPhone)");
+            System.out.println("3. Додати кнопковий телефон (KeypadPhone)");
+            System.out.println("4. Вивести всі телефони з однієї колекції (Поліморфізм)");
             System.out.println("5. Завершити роботу");
             System.out.print("Оберіть пункт (1-5): ");
 
@@ -30,16 +32,16 @@ public class Main {
 
             switch (choice) {
                 case "1":
-                    addPhone();
+                    addBasePhone();
                     break;
                 case "2":
-                    copyLastPhone();
+                    addSmartPhone();
                     break;
                 case "3":
-                    printStoreInfo();
+                    addKeypadPhone();
                     break;
                 case "4":
-                    System.out.println("Загалом створено об'єктів Phone (static count): " + Phone.getObjectCount());
+                    printAllPhones();
                     break;
                 case "5":
                     running = false;
@@ -53,79 +55,83 @@ public class Main {
 
     private static void printHeader() {
         System.out.println("=================================================");
-        System.out.println("    ПРАКТИЧНА РОБОТА №6 - СТАТИЧНІ ЧЛЕНИ ТА ENUM   ");
-        System.out.println("    Предметна область: Phone & Store             ");
+        System.out.println("    ПРАКТИЧНА РОБОТА №7 - НАСЛІДУВАННЯ ТА ПОЛІМОРФІЗМ");
+        System.out.println("    Предметна область: Phone, SmartPhone, KeypadPhone");
         System.out.println("=================================================");
     }
 
-    private static void addPhone() {
-        System.out.println("\n    Додавання нового телефону    ");
+    private static void addBasePhone() {
+        System.out.println("\n    Додавання базового телефону (Phone)    ");
         try {
             System.out.print("Введіть бренд: ");
             String brand = scanner.nextLine();
-
             System.out.print("Введіть модель: ");
             String model = scanner.nextLine();
-
             System.out.print("Введіть ціну ($): ");
             double price = readDouble();
-
             System.out.print("Введіть обсяг ОЗП (ГБ): ");
             int ramGb = readInt();
 
-            System.out.println("Оберіть тип телефону:");
-            System.out.println("1 - Смартфон");
-            System.out.println("2 - Кнопковий телефон");
-            System.out.println("3 - Ігровий смартфон");
-            System.out.print("Вибір (1-3): ");
-            PhoneType type = readPhoneType();
-
-            Phone phone = new Phone(brand, model, price, ramGb, type);
-            store.addPhone(phone);
-            System.out.println("Телефон успішно додано до магазину!");
-
+            Phone phone = new Phone(brand, model, price, ramGb, PhoneType.SMARTPHONE);
+            phoneList.add(phone);
+            System.out.println("Базовий телефон успішно додано!");
         } catch (IllegalArgumentException e) {
             System.out.println("Помилка валідації: " + e.getMessage());
         }
     }
 
-    private static void copyLastPhone() {
-        if (store.getPhones().isEmpty()) {
-            System.out.println("Помилка: Немає телефонів для копіювання!");
-            return;
+    private static void addSmartPhone() {
+        System.out.println("\n    Додавання смартфона (SmartPhone)    ");
+        try {
+            System.out.print("Введіть бренд: ");
+            String brand = scanner.nextLine();
+            System.out.print("Введіть модель: ");
+            String model = scanner.nextLine();
+            System.out.print("Введіть ціну ($): ");
+            double price = readDouble();
+            System.out.print("Введіть обсяг ОЗП (ГБ): ");
+            int ramGb = readInt();
+            System.out.print("Введіть ОС (iOS/Android): ");
+            String os = scanner.nextLine();
+
+            SmartPhone smartPhone = new SmartPhone(brand, model, price, ramGb, PhoneType.SMARTPHONE, os);
+            phoneList.add(smartPhone);
+            System.out.println("Смартфон успішно додано!");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Помилка валідації: " + e.getMessage());
         }
-        Phone last = store.getPhones().get(store.getPhones().size() - 1);
-        Phone copy = new Phone(last);
-        store.addPhone(copy);
-        System.out.println("Створено копію телефону через конструктор копіювання:");
-        System.out.println(copy);
     }
 
-    private static void printStoreInfo() {
-        System.out.println("\n    Інформація про магазин    ");
-        System.out.println(store);
-        System.out.println("    Список телефонів    ");
-        if (store.getPhones().isEmpty()) {
-            System.out.println("Магазин порожній.");
+    private static void addKeypadPhone() {
+        System.out.println("\n    Додавання кнопкового телефону (KeypadPhone)    ");
+        try {
+            System.out.print("Введіть бренд: ");
+            String brand = scanner.nextLine();
+            System.out.print("Введіть модель: ");
+            String model = scanner.nextLine();
+            System.out.print("Введіть ціну ($): ");
+            double price = readDouble();
+            System.out.print("Введіть обсяг ОЗП (ГБ): ");
+            int ramGb = readInt();
+            System.out.print("Чи є ліхтарик? (1 - Так, 0 - Ні): ");
+            boolean hasTorch = readInt() == 1;
+
+            KeypadPhone keypadPhone = new KeypadPhone(brand, model, price, ramGb, PhoneType.FEATURE_PHONE, hasTorch);
+            phoneList.add(keypadPhone);
+            System.out.println("Кнопковий телефон успішно додано!");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Помилка валідації: " + e.getMessage());
+        }
+    }
+
+    private static void printAllPhones() {
+        System.out.println("\n    Вивід усіх об'єктів з одного ArrayList<Phone> (Поліморфізм)    ");
+        if (phoneList.isEmpty()) {
+            System.out.println("Колекція порожня.");
         } else {
-            for (int i = 0; i < store.getPhones().size(); i++) {
-                System.out.println((i + 1) + ". " + store.getPhones().get(i));
-            }
-        }
-    }
-
-    private static PhoneType readPhoneType() {
-        while (true) {
-            String input = scanner.nextLine().trim();
-            switch (input) {
-                case "1":
-                    return PhoneType.SMARTPHONE;
-                case "2":
-                    return PhoneType.FEATURE_PHONE;
-                case "3":
-                    return PhoneType.GAMING_PHONE;
-                default:
-                    System.out.print("Некоректний вибір! Введіть 1, 2 або 3: ");
+            for (int i = 0; i < phoneList.size(); i++) {
+                // Демонстрація поліморфізму: викликається відповідний toString() залежно від реального типу
+                System.out.println((i + 1) + ". " + phoneList.get(i));
             }
         }
     }
