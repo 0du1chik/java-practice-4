@@ -1,15 +1,12 @@
 package com.example;
 
-import com.example.model.KeypadPhone;
-import com.example.model.Phone;
-import com.example.model.PhoneType;
-import com.example.model.SmartPhone;
+import com.example.model.*;
 
 import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * Драйвер-клас для демонстрації успадкування та поліморфізму.
+ * Клас-драйвер для Практичної роботи №8.
  */
 public class Main {
     private static final Scanner scanner = new Scanner(System.in);
@@ -20,16 +17,51 @@ public class Main {
         boolean running = true;
 
         while (running) {
-            System.out.println("\n=== МЕНЮ УПРАВЛІННЯ (ПРАКТИЧНА №7 - ПОЛІМОРФІЗМ) ===");
-            System.out.println("1. Додати базовий телефон (Phone)");
-            System.out.println("2. Додати смартфон (SmartPhone)");
-            System.out.println("3. Додати кнопковий телефон (KeypadPhone)");
-            System.out.println("4. Вивести всі телефони з однієї колекції (Поліморфізм)");
-            System.out.println("5. Завершити роботу");
-            System.out.print("Оберіть пункт (1-5): ");
+            System.out.println("\n=== ГОЛОВНЕ МЕНЮ ===");
+            System.out.println("1. Створити новий об’єкт");
+            System.out.println("2. Вивести інформацію про всі об’єкти");
+            System.out.println("3. Завершити роботу програми");
+            System.out.print("Оберіть пункт (1-3): ");
 
             String choice = scanner.nextLine().trim();
 
+            switch (choice) {
+                case "1":
+                    createNewObjectMenu();
+                    break;
+                case "2":
+                    printAllObjects();
+                    break;
+                case "3":
+                    running = false;
+                    System.out.println("Програму завершено. До побачення!");
+                    break;
+                default:
+                    System.out.println("Помилка: Некоректний вибір. Введіть 1, 2 або 3.");
+            }
+        }
+    }
+
+    private static void printHeader() {
+        System.out.println("=================================================");
+        System.out.println("    ПРАКТИЧНА РОБОТА №8 - РОЗШИРЕННЯ ІЄРАРХІЇ   ");
+        System.out.println("    Ієрархія з 5 класів та підменю створення     ");
+        System.out.println("=================================================");
+    }
+
+    private static void createNewObjectMenu() {
+        System.out.println("\n    Оберіть тип об’єкта для створення    ");
+        System.out.println("1. Базовий телефон (Phone)");
+        System.out.println("2. Смартфон (SmartPhone)");
+        System.out.println("3. Кнопковий телефон (KeypadPhone)");
+        System.out.println("4. Гнучкий смартфон (FoldableSmartPhone)");
+        System.out.println("5. Захищений кнопковий телефон (SecureKeypadPhone)");
+        System.out.println("0. Повернутися до головного меню");
+        System.out.print("Ваш вибір (0-5): ");
+
+        String choice = scanner.nextLine().trim();
+
+        try {
             switch (choice) {
                 case "1":
                     addBasePhone();
@@ -41,118 +73,128 @@ public class Main {
                     addKeypadPhone();
                     break;
                 case "4":
-                    printAllPhones();
+                    addFoldableSmartPhone();
                     break;
                 case "5":
-                    running = false;
-                    System.out.println("Програму завершено. До побачення!");
+                    addSecureKeypadPhone();
+                    break;
+                case "0":
+                    System.out.println("Повернення до головного меню без створення об'єкта.");
                     break;
                 default:
-                    System.out.println("Помилка: Некоректний вибір. Введіть число від 1 до 5.");
+                    System.out.println("Некоректний вибір типа об'єкта.");
             }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Помилка створення об'єкта: " + e.getMessage());
         }
-    }
-
-    private static void printHeader() {
-        System.out.println("=================================================");
-        System.out.println("    ПРАКТИЧНА РОБОТА №7 - НАСЛІДУВАННЯ ТА ПОЛІМОРФІЗМ");
-        System.out.println("    Предметна область: Phone, SmartPhone, KeypadPhone");
-        System.out.println("=================================================");
     }
 
     private static void addBasePhone() {
-        System.out.println("\n    Додавання базового телефону (Phone)    ");
-        try {
-            System.out.print("Введіть бренд: ");
-            String brand = scanner.nextLine();
-            System.out.print("Введіть модель: ");
-            String model = scanner.nextLine();
-            System.out.print("Введіть ціну ($): ");
-            double price = readDouble();
-            System.out.print("Введіть обсяг ОЗП (ГБ): ");
-            int ramGb = readInt();
+        System.out.println("\n   Створення Phone   ");
+        String brand = readString("Бренд: ");
+        String model = readString("Модель: ");
+        double price = readDouble("Ціна ($): ");
+        int ram = readInt("ОЗП (ГБ): ");
 
-            Phone phone = new Phone(brand, model, price, ramGb, PhoneType.SMARTPHONE);
-            phoneList.add(phone);
-            System.out.println("Базовий телефон успішно додано!");
-        } catch (IllegalArgumentException e) {
-            System.out.println("Помилка валідації: " + e.getMessage());
-        }
+        phoneList.add(new Phone(brand, model, price, ram, PhoneType.FEATURE_PHONE));
+        System.out.println("Успішно додано базовий телефон!");
     }
 
     private static void addSmartPhone() {
-        System.out.println("\n    Додавання смартфона (SmartPhone)    ");
-        try {
-            System.out.print("Введіть бренд: ");
-            String brand = scanner.nextLine();
-            System.out.print("Введіть модель: ");
-            String model = scanner.nextLine();
-            System.out.print("Введіть ціну ($): ");
-            double price = readDouble();
-            System.out.print("Введіть обсяг ОЗП (ГБ): ");
-            int ramGb = readInt();
-            System.out.print("Введіть ОС (iOS/Android): ");
-            String os = scanner.nextLine();
+        System.out.println("\n   Створення SmartPhone   ");
+        String brand = readString("Бренд: ");
+        String model = readString("Модель: ");
+        double price = readDouble("Ціна ($): ");
+        int ram = readInt("ОЗП (ГБ): ");
+        String os = readString("Операційна система: ");
 
-            SmartPhone smartPhone = new SmartPhone(brand, model, price, ramGb, PhoneType.SMARTPHONE, os);
-            phoneList.add(smartPhone);
-            System.out.println("Смартфон успішно додано!");
-        } catch (IllegalArgumentException e) {
-            System.out.println("Помилка валідації: " + e.getMessage());
-        }
+        phoneList.add(new SmartPhone(brand, model, price, ram, PhoneType.SMARTPHONE, os));
+        System.out.println("Успішно додано смартфон!");
     }
 
     private static void addKeypadPhone() {
-        System.out.println("\n    Додавання кнопкового телефону (KeypadPhone)    ");
-        try {
-            System.out.print("Введіть бренд: ");
-            String brand = scanner.nextLine();
-            System.out.print("Введіть модель: ");
-            String model = scanner.nextLine();
-            System.out.print("Введіть ціну ($): ");
-            double price = readDouble();
-            System.out.print("Введіть обсяг ОЗП (ГБ): ");
-            int ramGb = readInt();
-            System.out.print("Чи є ліхтарик? (1 - Так, 0 - Ні): ");
-            boolean hasTorch = readInt() == 1;
+        System.out.println("\n   Створення KeypadPhone   ");
+        String brand = readString("Бренд: ");
+        String model = readString("Модель: ");
+        double price = readDouble("Ціна ($): ");
+        int ram = readInt("ОЗП (ГБ): ");
+        boolean torch = readBoolean("Наявність ліхтарика (1 - Так, 0 - Ні): ");
 
-            KeypadPhone keypadPhone = new KeypadPhone(brand, model, price, ramGb, PhoneType.FEATURE_PHONE, hasTorch);
-            phoneList.add(keypadPhone);
-            System.out.println("Кнопковий телефон успішно додано!");
-        } catch (IllegalArgumentException e) {
-            System.out.println("Помилка валідації: " + e.getMessage());
-        }
+        phoneList.add(new KeypadPhone(brand, model, price, ram, PhoneType.FEATURE_PHONE, torch));
+        System.out.println("Успішно додано кнопковий телефон!");
     }
 
-    private static void printAllPhones() {
-        System.out.println("\n    Вивід усіх об'єктів з одного ArrayList<Phone> (Поліморфізм)    ");
+    private static void addFoldableSmartPhone() {
+        System.out.println("\n   Створення FoldableSmartPhone   ");
+        String brand = readString("Бренд: ");
+        String model = readString("Модель: ");
+        double price = readDouble("Ціна ($): ");
+        int ram = readInt("ОЗП (ГБ): ");
+        String os = readString("Операційна система: ");
+        boolean dualScreen = readBoolean("Чи є додатковий екран (1 - Так, 0 - Ні): ");
+
+        phoneList.add(new FoldableSmartPhone(brand, model, price, ram, PhoneType.SMARTPHONE, os, dualScreen));
+        System.out.println("Успішно додано гнучкий смартфон!");
+    }
+
+    private static void addSecureKeypadPhone() {
+        System.out.println("\n   Створення SecureKeypadPhone   ");
+        String brand = readString("Бренд: ");
+        String model = readString("Модель: ");
+        double price = readDouble("Ціна ($): ");
+        int ram = readInt("ОЗП (ГБ): ");
+        boolean torch = readBoolean("Наявність ліхтарика (1 - Так, 0 - Ні): ");
+        String protection = readString("Стандарт захисту (наприклад, IP68): ");
+
+        phoneList.add(new SecureKeypadPhone(brand, model, price, ram, PhoneType.FEATURE_PHONE, torch, protection));
+        System.out.println("Успішно додано захищений кнопковий телефон!");
+    }
+
+    private static void printAllObjects() {
+        System.out.println("\n   Список усіх об'єктів у колекції ArrayList<Phone>   ");
         if (phoneList.isEmpty()) {
             System.out.println("Колекція порожня.");
         } else {
             for (int i = 0; i < phoneList.size(); i++) {
-                // Демонстрація поліморфізму: викликається відповідний toString() залежно від реального типу
                 System.out.println((i + 1) + ". " + phoneList.get(i));
             }
         }
     }
 
-    private static double readDouble() {
+    private static String readString(String prompt) {
+        System.out.print(prompt);
+        return scanner.nextLine().trim();
+    }
+
+    private static double readDouble(String prompt) {
         while (true) {
+            System.out.print(prompt);
             try {
                 return Double.parseDouble(scanner.nextLine().trim());
             } catch (NumberFormatException e) {
-                System.out.print("Некоректний ввід! Введіть дійсне число: ");
+                System.out.println("Помилка: введіть дійсне число.");
             }
         }
     }
 
-    private static int readInt() {
+    private static int readInt(String prompt) {
         while (true) {
+            System.out.print(prompt);
             try {
                 return Integer.parseInt(scanner.nextLine().trim());
             } catch (NumberFormatException e) {
-                System.out.print("Некоректний ввід! Введіть ціле число: ");
+                System.out.println("Помилка: введіть ціле число.");
             }
+        }
+    }
+
+    private static boolean readBoolean(String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            String input = scanner.nextLine().trim();
+            if ("1".equals(input) || "true".equalsIgnoreCase(input)) return true;
+            if ("0".equals(input) || "false".equalsIgnoreCase(input)) return false;
+            System.out.println("Помилка: введіть 1 (Так) або 0 (Ні).");
         }
     }
 }
