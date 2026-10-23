@@ -1,23 +1,25 @@
 package com.example;
 
 import com.example.model.*;
+import com.example.util.FileManager;
 
 import java.util.ArrayList;
 import java.util.Scanner;
 
-/**
- * Клас-драйвер для Практичної роботи №8.
- */
 public class Main {
+    private static final String FILE_NAME = "input.json";
     private static final Scanner scanner = new Scanner(System.in);
-    private static final ArrayList<Phone> phoneList = new ArrayList<>();
+    private static ArrayList<Phone> phoneList = new ArrayList<>();
 
     public static void main(String[] args) {
         printHeader();
-        boolean running = true;
+        
+        // Автоматичне завантаження з файлу
+        phoneList = FileManager.loadFromJson(FILE_NAME);
 
+        boolean running = true;
         while (running) {
-            System.out.println("\n=== ГОЛОВНЕ МЕНЮ ===");
+            System.out.println("\n=== ГОЛОВНЕ МЕНЮ (ПРАКТИЧНА №9 - JSON) ===");
             System.out.println("1. Створити новий об’єкт");
             System.out.println("2. Вивести інформацію про всі об’єкти");
             System.out.println("3. Завершити роботу програми");
@@ -34,6 +36,8 @@ public class Main {
                     break;
                 case "3":
                     running = false;
+                    // Автоматичне збереження у файл при виході
+                    FileManager.saveToJson(phoneList, FILE_NAME);
                     System.out.println("Програму завершено. До побачення!");
                     break;
                 default:
@@ -44,8 +48,8 @@ public class Main {
 
     private static void printHeader() {
         System.out.println("=================================================");
-        System.out.println("    ПРАКТИЧНА РОБОТА №8 - РОЗШИРЕННЯ ІЄРАРХІЇ   ");
-        System.out.println("    Ієрархія з 5 класів та підменю створення     ");
+        System.out.println("    ПРАКТИЧНА РОБОТА №9 - ЗБЕРЕЖЕННЯ В JSON      ");
+        System.out.println("    Автозавантаження та автозбереження даних     ");
         System.out.println("=================================================");
     }
 
@@ -79,7 +83,7 @@ public class Main {
                     addSecureKeypadPhone();
                     break;
                 case "0":
-                    System.out.println("Повернення до головного меню без створення об'єкта.");
+                    System.out.println("Повернення до головного меню.");
                     break;
                 default:
                     System.out.println("Некоректний вибір типа об'єкта.");
@@ -151,7 +155,7 @@ public class Main {
     }
 
     private static void printAllObjects() {
-        System.out.println("\n   Список усіх об'єктів у колекції ArrayList<Phone>   ");
+        System.out.println("\n    Список усіх об'єктів у колекції ArrayList<Phone>    ");
         if (phoneList.isEmpty()) {
             System.out.println("Колекція порожня.");
         } else {
