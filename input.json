@@ -1,0 +1,21 @@
+[
+  {
+    "classType": "SmartPhone",
+    "brand": "Apple",
+    "model": "iPhone 15 Pro",
+    "price": 999.0,
+    "ramGb": 8,
+    "type": "SMARTPHONE",
+    "operatingSystem": "iOS"
+  },
+  {
+    "classType": "SecureKeypadPhone",
+    "brand": "CAT",
+    "model": "B35",
+    "price": 150.0,
+    "ramGb": 1,
+    "type": "FEATURE_PHONE",
+    "hasTorch": true,
+    "protectionStandard": "IP68"
+  }
+]
