@@ -6,7 +6,8 @@
     "price": 999.0,
     "ramGb": 8,
     "type": "SMARTPHONE",
-    "operatingSystem": "iOS"
+    "operatingSystem": "iOS",
+    "quantity": 5
   },
   {
     "classType": "SecureKeypadPhone",
@@ -16,6 +17,7 @@
     "ramGb": 1,
     "type": "FEATURE_PHONE",
     "hasTorch": true,
-    "protectionStandard": "IP68"
+    "protectionStandard": "IP68",
+    "quantity": 10
   }
 ]
