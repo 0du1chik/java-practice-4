@@ -14,16 +14,17 @@ public class Main {
     public static void main(String[] args) {
         printHeader();
         
-        // Автоматичне завантаження з файлу
+        // Автоматичне завантаження з файлу (з Лаб 9)
         phoneList = FileManager.loadFromJson(FILE_NAME);
 
         boolean running = true;
         while (running) {
-            System.out.println("\n=== ГОЛОВНЕ МЕНЮ (ПРАКТИЧНА №9 - JSON) ===");
+            System.out.println("\n=== ГОЛОВНЕ МЕНЮ (ПРАКТИЧНА №10 - ПОШУК) ===");
             System.out.println("1. Створити новий об’єкт");
-            System.out.println("2. Вивести інформацію про всі об’єкти");
-            System.out.println("3. Завершити роботу програми");
-            System.out.print("Оберіть пункт (1-3): ");
+            System.out.println("2. Пошук об’єкта");
+            System.out.println("3. Вивести інформацію про всі об’єкти");
+            System.out.println("4. Завершити роботу програми");
+            System.out.print("Оберіть пункт (1-4): ");
 
             String choice = scanner.nextLine().trim();
 
@@ -32,27 +33,130 @@ public class Main {
                     createNewObjectMenu();
                     break;
                 case "2":
-                    printAllObjects();
+                    searchMenu();
                     break;
                 case "3":
+                    printAllObjects();
+                    break;
+                case "4":
                     running = false;
-                    // Автоматичне збереження у файл при виході
                     FileManager.saveToJson(phoneList, FILE_NAME);
                     System.out.println("Програму завершено. До побачення!");
                     break;
                 default:
-                    System.out.println("Помилка: Некоректний вибір. Введіть 1, 2 або 3.");
+                    System.out.println("Помилка: Некоректний вибір. Введіть число від 1 до 4.");
             }
         }
     }
 
     private static void printHeader() {
         System.out.println("=================================================");
-        System.out.println("    ПРАКТИЧНА РОБОТА №9 - ЗБЕРЕЖЕННЯ В JSON      ");
-        System.out.println("    Автозавантаження та автозбереження даних     ");
+        System.out.println("    ПРАКТИЧНА РОБОТА №10 - ПОШУК У КОЛЕКЦІЯХ    ");
+        System.out.println("    Пошук за 3 критеріями без Stream API         ");
         System.out.println("=================================================");
     }
 
+    //     ПІДМЕНЮ ПОШУКУ (Вимога 2 та 3)    
+    private static void searchMenu() {
+        if (phoneList.isEmpty()) {
+            System.out.println("\nКолекція порожня! Пошук неможливий.");
+            return;
+        }
+
+        System.out.println("\n    МЕНЮ ПОШУКУ    ");
+        System.out.println("1. Пошук за брендом");
+        System.out.println("2. Пошук за максимальною ціною");
+        System.out.println("3. Пошук за мінімальним обсягом ОЗП (RAM)");
+        System.out.println("0. Повернутися до головного меню");
+        System.out.print("Оберіть критерій пошуку (0-3): ");
+
+        String choice = scanner.nextLine().trim();
+
+        switch (choice) {
+            case "1":
+                searchByBrand();
+                break;
+            case "2":
+                searchByMaxPrice();
+                break;
+            case "3":
+                searchByMinRam();
+                break;
+            case "0":
+                System.out.println("Повернення до головного меню.");
+                break;
+            default:
+                System.out.println("Некоректний вибір критерію пошуку.");
+        }
+    }
+
+    //     ОКТРЕМІ МЕТОДИ ПОШУКУ (Вимога 4, 5, 8, 9)    
+
+    // 1. Пошук за брендом
+    private static void searchByBrand() {
+        String brand = readString("Введіть назву бренду для пошуку: ");
+        ArrayList<Phone> results = findByBrand(phoneList, brand);
+        printSearchResults(results, "Бренд містить '" + brand + "'");
+    }
+
+    public static ArrayList<Phone> findByBrand(ArrayList<Phone> list, String brand) {
+        ArrayList<Phone> result = new ArrayList<>();
+        for (Phone phone : list) {
+            if (phone.getBrand().equalsIgnoreCase(brand.trim())) {
+                result.add(phone);
+            }
+        }
+        return result;
+    }
+
+    // 2. Пошук за максимальною ціною (ціна <= maxPrice)
+    private static void searchByMaxPrice() {
+        double maxPrice = readDouble("Введіть максимальну ціну ($): ");
+        ArrayList<Phone> results = findByMaxPrice(phoneList, maxPrice);
+        printSearchResults(results, "Ціна <= " + maxPrice + "$");
+    }
+
+    public static ArrayList<Phone> findByMaxPrice(ArrayList<Phone> list, double maxPrice) {
+        ArrayList<Phone> result = new ArrayList<>();
+        for (Phone phone : list) {
+            if (phone.getPrice() <= maxPrice) {
+                result.add(phone);
+            }
+        }
+        return result;
+    }
+
+    // 3. Пошук за мінімальним ОЗП (ramGb >= minRam)
+    private static void searchByMinRam() {
+        int minRam = readInt("Введіть мінімальний обсяг ОЗП (ГБ): ");
+        ArrayList<Phone> results = findByMinRam(phoneList, minRam);
+        printSearchResults(results, "ОЗП >= " + minRam + " ГБ");
+    }
+
+    public static ArrayList<Phone> findByMinRam(ArrayList<Phone> list, int minRam) {
+        ArrayList<Phone> result = new ArrayList<>();
+        for (Phone phone : list) {
+            if (phone.getRamGb() >= minRam) {
+                result.add(phone);
+            }
+        }
+        return result;
+    }
+
+    // Допоміжний метод виводу результатів пошуку
+    private static void printSearchResults(ArrayList<Phone> results, String criterion) {
+        System.out.println("\n    Результати пошуку за критерієм [" + criterion + "]    ");
+        if (results.isEmpty()) {
+            System.out.println("Жоден об’єкт не відповідає умовам пошуку.");
+        } else {
+            System.out.println("Знайдено об’єктів: " + results.size());
+            for (int i = 0; i < results.size(); i++) {
+                System.out.println((i + 1) + ". " + results.get(i));
+            }
+        }
+    }
+
+    //     РЕШТА МЕТОДІВ (ЗБЕРЕЖЕНІ З ЛАБ 8 ТА 9)    
     private static void createNewObjectMenu() {
         System.out.println("\n    Оберіть тип об’єкта для створення    ");
         System.out.println("1. Базовий телефон (Phone)");
@@ -86,7 +190,7 @@ public class Main {
                     System.out.println("Повернення до головного меню.");
                     break;
                 default:
-                    System.out.println("Некоректний вибір типа об'єкта.");
+                    System.out.println("Некоректний вибір типу об'єкта.");
             }
         } catch (IllegalArgumentException e) {
             System.out.println("Помилка створення об'єкта: " + e.getMessage());
