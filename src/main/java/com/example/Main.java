@@ -9,20 +9,19 @@ import java.util.Scanner;
 public class Main {
     private static final String FILE_NAME = "input.json";
     private static final Scanner scanner = new Scanner(System.in);
-    private static ArrayList<Phone> phoneList = new ArrayList<>();
+    private static Store store;
 
     public static void main(String[] args) {
         printHeader();
         
-        // Автоматичне завантаження з файлу (з Лаб 9)
-        phoneList = FileManager.loadFromJson(FILE_NAME);
+        store = FileManager.loadFromJson(FILE_NAME, "TechStore");
 
         boolean running = true;
         while (running) {
-            System.out.println("\n=== ГОЛОВНЕ МЕНЮ (ПРАКТИЧНА №10 - ПОШУК) ===");
-            System.out.println("1. Створити новий об’єкт");
-            System.out.println("2. Пошук об’єкта");
-            System.out.println("3. Вивести інформацію про всі об’єкти");
+            System.out.println("\n=== ГОЛОВНЕ МЕНЮ (ПРАКТИЧНА №11 - МАГАЗИН STORE) ===");
+            System.out.println("1. Додати товар у магазин");
+            System.out.println("2. Пошук товару в магазині");
+            System.out.println("3. Вивести асортимент магазину");
             System.out.println("4. Завершити роботу програми");
             System.out.print("Оберіть пункт (1-4): ");
 
@@ -40,7 +39,7 @@ public class Main {
                     break;
                 case "4":
                     running = false;
-                    FileManager.saveToJson(phoneList, FILE_NAME);
+                    FileManager.saveToJson(store, FILE_NAME);
                     System.out.println("Програму завершено. До побачення!");
                     break;
                 default:
@@ -51,19 +50,18 @@ public class Main {
 
     private static void printHeader() {
         System.out.println("=================================================");
-        System.out.println("    ПРАКТИЧНА РОБОТА №10 - ПОШУК У КОЛЕКЦІЯХ    ");
-        System.out.println("    Пошук за 3 критеріями без Stream API         ");
+        System.out.println("    ПРАКТИЧНА РОБОТА №11 - КОНТЕЙНЕР STORE      ");
+        System.out.println("    Агрегація товарів та кількісний облік        ");
         System.out.println("=================================================");
     }
 
-    //     ПІДМЕНЮ ПОШУКУ (Вимога 2 та 3)    
     private static void searchMenu() {
-        if (phoneList.isEmpty()) {
-            System.out.println("\nКолекція порожня! Пошук неможливий.");
+        if (store.isEmpty()) {
+            System.out.println("\nМагазин порожній! Пошук неможливий.");
             return;
         }
 
-        System.out.println("\n    МЕНЮ ПОШУКУ    ");
+        System.out.println("\n  - МЕНЮ ПОШУКУ В МАГАЗИНІ   -");
         System.out.println("1. Пошук за брендом");
         System.out.println("2. Пошук за максимальною ціною");
         System.out.println("3. Пошук за мінімальним обсягом ОЗП (RAM)");
@@ -90,75 +88,38 @@ public class Main {
         }
     }
 
-    //     ОКТРЕМІ МЕТОДИ ПОШУКУ (Вимога 4, 5, 8, 9)    
-
-    // 1. Пошук за брендом
     private static void searchByBrand() {
         String brand = readString("Введіть назву бренду для пошуку: ");
-        ArrayList<Phone> results = findByBrand(phoneList, brand);
+        ArrayList<StoreItem> results = store.findByBrand(brand);
         printSearchResults(results, "Бренд містить '" + brand + "'");
     }
 
-    public static ArrayList<Phone> findByBrand(ArrayList<Phone> list, String brand) {
-        ArrayList<Phone> result = new ArrayList<>();
-        for (Phone phone : list) {
-            if (phone.getBrand().equalsIgnoreCase(brand.trim())) {
-                result.add(phone);
-            }
-        }
-        return result;
-    }
-
-    // 2. Пошук за максимальною ціною (ціна <= maxPrice)
     private static void searchByMaxPrice() {
         double maxPrice = readDouble("Введіть максимальну ціну ($): ");
-        ArrayList<Phone> results = findByMaxPrice(phoneList, maxPrice);
+        ArrayList<StoreItem> results = store.findByMaxPrice(maxPrice);
         printSearchResults(results, "Ціна <= " + maxPrice + "$");
     }
 
-    public static ArrayList<Phone> findByMaxPrice(ArrayList<Phone> list, double maxPrice) {
-        ArrayList<Phone> result = new ArrayList<>();
-        for (Phone phone : list) {
-            if (phone.getPrice() <= maxPrice) {
-                result.add(phone);
-            }
-        }
-        return result;
-    }
-
-    // 3. Пошук за мінімальним ОЗП (ramGb >= minRam)
     private static void searchByMinRam() {
         int minRam = readInt("Введіть мінімальний обсяг ОЗП (ГБ): ");
-        ArrayList<Phone> results = findByMinRam(phoneList, minRam);
+        ArrayList<StoreItem> results = store.findByMinRam(minRam);
         printSearchResults(results, "ОЗП >= " + minRam + " ГБ");
     }
 
-    public static ArrayList<Phone> findByMinRam(ArrayList<Phone> list, int minRam) {
-        ArrayList<Phone> result = new ArrayList<>();
-        for (Phone phone : list) {
-            if (phone.getRamGb() >= minRam) {
-                result.add(phone);
-            }
-        }
-        return result;
-    }
-
-    // Допоміжний метод виводу результатів пошуку
-    private static void printSearchResults(ArrayList<Phone> results, String criterion) {
-        System.out.println("\n    Результати пошуку за критерієм [" + criterion + "]    ");
+    private static void printSearchResults(ArrayList<StoreItem> results, String criterion) {
+        System.out.println("\n  - Результати пошуку в магазині [" + criterion + "]   -");
         if (results.isEmpty()) {
-            System.out.println("Жоден об’єкт не відповідає умовам пошуку.");
+            System.out.println("Жоден товар не відповідає умовам пошуку.");
         } else {
-            System.out.println("Знайдено об’єктів: " + results.size());
+            System.out.println("Знайдено позицій: " + results.size());
             for (int i = 0; i < results.size(); i++) {
                 System.out.println((i + 1) + ". " + results.get(i));
             }
         }
     }
 
-    //     РЕШТА МЕТОДІВ (ЗБЕРЕЖЕНІ З ЛАБ 8 ТА 9)    
     private static void createNewObjectMenu() {
-        System.out.println("\n    Оберіть тип об’єкта для створення    ");
+        System.out.println("\n  - Оберіть тип товару для додавання   -");
         System.out.println("1. Базовий телефон (Phone)");
         System.out.println("2. Смартфон (SmartPhone)");
         System.out.println("3. Кнопковий телефон (KeypadPhone)");
@@ -203,9 +164,10 @@ public class Main {
         String model = readString("Модель: ");
         double price = readDouble("Ціна ($): ");
         int ram = readInt("ОЗП (ГБ): ");
+        int qty = readInt("Кількість шт.: ");
 
-        phoneList.add(new Phone(brand, model, price, ram, PhoneType.FEATURE_PHONE));
-        System.out.println("Успішно додано базовий телефон!");
+        store.addNewPhone(new Phone(brand, model, price, ram, PhoneType.FEATURE_PHONE), qty);
+        System.out.println("Товар успішно додано у магазин!");
     }
 
     private static void addSmartPhone() {
@@ -215,9 +177,10 @@ public class Main {
         double price = readDouble("Ціна ($): ");
         int ram = readInt("ОЗП (ГБ): ");
         String os = readString("Операційна система: ");
+        int qty = readInt("Кількість шт.: ");
 
-        phoneList.add(new SmartPhone(brand, model, price, ram, PhoneType.SMARTPHONE, os));
-        System.out.println("Успішно додано смартфон!");
+        store.addNewPhone(new SmartPhone(brand, model, price, ram, PhoneType.SMARTPHONE, os), qty);
+        System.out.println("Товар успішно додано у магазин!");
     }
 
     private static void addKeypadPhone() {
@@ -227,9 +190,10 @@ public class Main {
         double price = readDouble("Ціна ($): ");
         int ram = readInt("ОЗП (ГБ): ");
         boolean torch = readBoolean("Наявність ліхтарика (1 - Так, 0 - Ні): ");
+        int qty = readInt("Кількість шт.: ");
 
-        phoneList.add(new KeypadPhone(brand, model, price, ram, PhoneType.FEATURE_PHONE, torch));
-        System.out.println("Успішно додано кнопковий телефон!");
+        store.addNewPhone(new KeypadPhone(brand, model, price, ram, PhoneType.FEATURE_PHONE, torch), qty);
+        System.out.println("Товар успішно додано у магазин!");
     }
 
     private static void addFoldableSmartPhone() {
@@ -240,9 +204,10 @@ public class Main {
         int ram = readInt("ОЗП (ГБ): ");
         String os = readString("Операційна система: ");
         boolean dualScreen = readBoolean("Чи є додатковий екран (1 - Так, 0 - Ні): ");
+        int qty = readInt("Кількість шт.: ");
 
-        phoneList.add(new FoldableSmartPhone(brand, model, price, ram, PhoneType.SMARTPHONE, os, dualScreen));
-        System.out.println("Успішно додано гнучкий смартфон!");
+        store.addNewPhone(new FoldableSmartPhone(brand, model, price, ram, PhoneType.SMARTPHONE, os, dualScreen), qty);
+        System.out.println("Товар успішно додано у магазин!");
     }
 
     private static void addSecureKeypadPhone() {
@@ -253,18 +218,20 @@ public class Main {
         int ram = readInt("ОЗП (ГБ): ");
         boolean torch = readBoolean("Наявність ліхтарика (1 - Так, 0 - Ні): ");
         String protection = readString("Стандарт захисту (наприклад, IP68): ");
+        int qty = readInt("Кількість шт.: ");
 
-        phoneList.add(new SecureKeypadPhone(brand, model, price, ram, PhoneType.FEATURE_PHONE, torch, protection));
-        System.out.println("Успішно додано захищений кнопковий телефон!");
+        store.addNewPhone(new SecureKeypadPhone(brand, model, price, ram, PhoneType.FEATURE_PHONE, torch, protection), qty);
+        System.out.println("Товар успішно додано у магазин!");
     }
 
     private static void printAllObjects() {
-        System.out.println("\n    Список усіх об'єктів у колекції ArrayList<Phone>    ");
-        if (phoneList.isEmpty()) {
-            System.out.println("Колекція порожня.");
+        System.out.println("\n  - Асортимент магазину '" + store.getName() + "'   -");
+        if (store.isEmpty()) {
+            System.out.println("Магазин порожній.");
         } else {
-            for (int i = 0; i < phoneList.size(); i++) {
-                System.out.println((i + 1) + ". " + phoneList.get(i));
+            ArrayList<StoreItem> items = store.getItems();
+            for (int i = 0; i < items.size(); i++) {
+                System.out.println((i + 1) + ". " + items.get(i));
             }
         }
     }
