@@ -2,10 +2,7 @@ package com.example.model;
 
 import java.util.Objects;
 
-/**
- * Клас-обгортка для зберігання товару (Phone) та його кількості в магазині.
- */
-public class StoreItem {
+public class StoreItem implements Comparable<StoreItem> {
     private Phone phone;
     private int quantity;
 
@@ -20,26 +17,20 @@ public class StoreItem {
         this.quantity = quantity;
     }
 
-    public Phone getPhone() {
-        return phone;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        if (quantity <= 0) {
-            throw new IllegalArgumentException("Кількість товару повинна бути більшою за 0.");
-        }
-        this.quantity = quantity;
-    }
+    public Phone getPhone() { return phone; }
+    public int getQuantity() { return quantity; }
 
     public void addQuantity(int amount) {
         if (amount <= 0) {
             throw new IllegalArgumentException("Кількість для додавання повинна бути більшою за 0.");
         }
         this.quantity += amount;
+    }
+
+    @Override
+    public int compareTo(StoreItem o) {
+        if (o == null || o.phone == null) return 1;
+        return this.phone.compareTo(o.phone);
     }
 
     @Override

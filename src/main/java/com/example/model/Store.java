@@ -1,6 +1,7 @@
 package com.example.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Клас-контейнер Store (Магазин), що підтримує агрегацію товарів та їх кількості.
@@ -8,6 +9,12 @@ import java.util.ArrayList;
 public class Store {
     private String name;
     private ArrayList<StoreItem> items;
+
+    public ArrayList<StoreItem> getSortedItems() {
+        ArrayList<StoreItem> sortedList = new ArrayList<>(items);
+        Collections.sort(sortedList);
+        return sortedList;
+    }
 
     public Store(String name) {
         if (name == null || name.trim().isEmpty()) {
@@ -44,8 +51,6 @@ public class Store {
         }
         items.add(new StoreItem(ph, quantity));
     }
-
-    // --- МЕТОДИ ПОШУКУ З ЛАБ 10 ---
 
     public ArrayList<StoreItem> findByBrand(String brand) {
         ArrayList<StoreItem> result = new ArrayList<>();
