@@ -13,17 +13,17 @@ public class Main {
 
     public static void main(String[] args) {
         printHeader();
-        
         store = FileManager.loadFromJson(FILE_NAME, "TechStore");
 
         boolean running = true;
         while (running) {
-            System.out.println("\n=== ГОЛОВНЕ МЕНЮ (ПРАКТИЧНА №11 - МАГАЗИН STORE) ===");
+            System.out.println("\n=== ГОЛОВНЕ МЕНЮ (ПРАКТИЧНА №13 - COMPARABLE) ===");
             System.out.println("1. Додати товар у магазин");
             System.out.println("2. Пошук товару в магазині");
             System.out.println("3. Вивести асортимент магазину");
-            System.out.println("4. Завершити роботу програми");
-            System.out.print("Оберіть пункт (1-4): ");
+            System.out.println("4. Вивести відсортовану інформацію про всі товари");
+            System.out.println("5. Завершити роботу програми");
+            System.out.print("Оберіть пункт (1-5): ");
 
             String choice = scanner.nextLine().trim();
 
@@ -38,21 +38,36 @@ public class Main {
                     printAllObjects();
                     break;
                 case "4":
+                    printSortedObjects();
+                    break;
+                case "5":
                     running = false;
                     FileManager.saveToJson(store, FILE_NAME);
                     System.out.println("Програму завершено. До побачення!");
                     break;
                 default:
-                    System.out.println("Помилка: Некоректний вибір. Введіть число від 1 до 4.");
+                    System.out.println("Помилка: Некоректний вибір. Введіть число від 1 до 5.");
             }
         }
     }
 
     private static void printHeader() {
         System.out.println("=================================================");
-        System.out.println("    ПРАКТИЧНА РОБОТА №11 - КОНТЕЙНЕР STORE      ");
-        System.out.println("    Агрегація товарів та кількісний облік        ");
+        System.out.println("    ПРАКТИЧНА РОБОТА №13 - Abstract classes      ");
+        System.out.println("         Interfaces, interface Comparable        ");
         System.out.println("=================================================");
+    }
+
+    private static void printSortedObjects() {
+        System.out.println("\n--- Відсортований асортимент магазину (за брендом і моделлю) ---");
+        if (store.isEmpty()) {
+            System.out.println("Магазин порожній.");
+        } else {
+            ArrayList<StoreItem> sortedItems = store.getSortedItems();
+            for (int i = 0; i < sortedItems.size(); i++) {
+                System.out.println((i + 1) + ". " + sortedItems.get(i));
+            }
+        }
     }
 
     private static void searchMenu() {
@@ -120,31 +135,27 @@ public class Main {
 
     private static void createNewObjectMenu() {
         System.out.println("\n  - Оберіть тип товару для додавання   -");
-        System.out.println("1. Базовий телефон (Phone)");
-        System.out.println("2. Смартфон (SmartPhone)");
-        System.out.println("3. Кнопковий телефон (KeypadPhone)");
-        System.out.println("4. Гнучкий смартфон (FoldableSmartPhone)");
-        System.out.println("5. Захищений кнопковий телефон (SecureKeypadPhone)");
+        System.out.println("1. Смартфон (SmartPhone)");
+        System.out.println("2. Кнопковий телефон (KeypadPhone)");
+        System.out.println("3. Гнучкий смартфон (FoldableSmartPhone)");
+        System.out.println("4. Захищений кнопковий телефон (SecureKeypadPhone)");
         System.out.println("0. Повернутися до головного меню");
-        System.out.print("Ваш вибір (0-5): ");
+        System.out.print("Ваш вибір (0-4): ");
 
         String choice = scanner.nextLine().trim();
 
         try {
             switch (choice) {
                 case "1":
-                    addBasePhone();
-                    break;
-                case "2":
                     addSmartPhone();
                     break;
-                case "3":
+                case "2":
                     addKeypadPhone();
                     break;
-                case "4":
+                case "3":
                     addFoldableSmartPhone();
                     break;
-                case "5":
+                case "4":
                     addSecureKeypadPhone();
                     break;
                 case "0":
@@ -156,18 +167,6 @@ public class Main {
         } catch (IllegalArgumentException e) {
             System.out.println("Помилка створення об'єкта: " + e.getMessage());
         }
-    }
-
-    private static void addBasePhone() {
-        System.out.println("\n   Створення Phone   ");
-        String brand = readString("Бренд: ");
-        String model = readString("Модель: ");
-        double price = readDouble("Ціна ($): ");
-        int ram = readInt("ОЗП (ГБ): ");
-        int qty = readInt("Кількість шт.: ");
-
-        store.addNewPhone(new Phone(brand, model, price, ram, PhoneType.FEATURE_PHONE), qty);
-        System.out.println("Товар успішно додано у магазин!");
     }
 
     private static void addSmartPhone() {
