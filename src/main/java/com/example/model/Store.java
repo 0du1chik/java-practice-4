@@ -2,6 +2,7 @@ package com.example.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Клас-контейнер Store (Магазин), що підтримує агрегацію товарів та їх кількості.
@@ -13,6 +14,42 @@ public class Store {
     public ArrayList<StoreItem> getSortedItems() {
         ArrayList<StoreItem> sortedList = new ArrayList<>(items);
         Collections.sort(sortedList);
+        return sortedList;
+    }
+    
+    // Сортування за ціною (зростання) через анонімний клас Comparator
+    public ArrayList<StoreItem> getItemsSortedByPrice() {
+        ArrayList<StoreItem> sortedList = new ArrayList<>(items);
+        Collections.sort(sortedList, new Comparator<StoreItem>() {
+            @Override
+            public int compare(StoreItem item1, StoreItem item2) {
+                return Double.compare(item1.getPhone().getPrice(), item2.getPhone().getPrice());
+            }
+        });
+        return sortedList;
+    }
+
+    // Сортування за ОЗП (спадання) через анонімний клас Comparator
+    public ArrayList<StoreItem> getItemsSortedByRamDesc() {
+        ArrayList<StoreItem> sortedList = new ArrayList<>(items);
+        Collections.sort(sortedList, new Comparator<StoreItem>() {
+            @Override
+            public int compare(StoreItem item1, StoreItem item2) {
+                return Integer.compare(item2.getPhone().getRamGb(), item1.getPhone().getRamGb());
+            }
+        });
+        return sortedList;
+    }
+
+    // Сортування за брендом (алфавіт) через анонімний клас Comparator
+    public ArrayList<StoreItem> getItemsSortedByBrand() {
+        ArrayList<StoreItem> sortedList = new ArrayList<>(items);
+        Collections.sort(sortedList, new Comparator<StoreItem>() {
+            @Override
+            public int compare(StoreItem item1, StoreItem item2) {
+                return item1.getPhone().getBrand().compareToIgnoreCase(item2.getPhone().getBrand());
+            }
+        });
         return sortedList;
     }
 
