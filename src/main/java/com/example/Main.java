@@ -53,20 +53,50 @@ public class Main {
 
     private static void printHeader() {
         System.out.println("=================================================");
-        System.out.println("    ПРАКТИЧНА РОБОТА №13 - Abstract classes      ");
-        System.out.println("         Interfaces, interface Comparable        ");
+        System.out.println("    ПРАКТИЧНА РОБОТА №14 - Inner classes         ");
+        System.out.println("             Interface Comparator                ");
         System.out.println("=================================================");
     }
 
     private static void printSortedObjects() {
-        System.out.println("\n--- Відсортований асортимент магазину (за брендом і моделлю) ---");
         if (store.isEmpty()) {
-            System.out.println("Магазин порожній.");
-        } else {
-            ArrayList<StoreItem> sortedItems = store.getSortedItems();
-            for (int i = 0; i < sortedItems.size(); i++) {
-                System.out.println((i + 1) + ". " + sortedItems.get(i));
-            }
+            System.out.println("\nМагазин порожній. Сортування неможливе.");
+            return;
+        }
+
+        System.out.println("\n    Оберіть критерій сортування    ");
+        System.out.println("1. Сортувати за ціною (від дешевших до дорожчих)");
+        System.out.println("2. Сортувати за обсягом ОЗП (від більшого до меншого)");
+        System.out.println("3. Сортувати за брендом (за алфавітом)");
+        System.out.println("0. Повернутися до головного меню");
+        System.out.print("Ваш вибір (0-3): ");
+
+        String choice = scanner.nextLine().trim();
+        ArrayList<StoreItem> sortedItems = null;
+
+        switch (choice) {
+            case "1":
+                sortedItems = store.getItemsSortedByPrice();
+                System.out.println("\n    Відсортовано за ціною (зростання)    ");
+                break;
+            case "2":
+                sortedItems = store.getItemsSortedByRamDesc();
+                System.out.println("\n    Відсортовано за обсягом ОЗП (спадання)    ");
+                break;
+            case "3":
+                sortedItems = store.getItemsSortedByBrand();
+                System.out.println("\n    Відсортовано за брендом (алфавіт)    ");
+                break;
+            case "0":
+                System.out.println("Повернення до головного меню.");
+                return;
+            default:
+                System.out.println("Некоректний вибір критерію сортування.");
+                return;
+        }
+
+        for (int i = 0; i < sortedItems.size(); i++) {
+            System.out.println((i + 1) + ". " + sortedItems.get(i));
         }
     }
 
@@ -76,7 +106,7 @@ public class Main {
             return;
         }
 
-        System.out.println("\n  - МЕНЮ ПОШУКУ В МАГАЗИНІ   -");
+        System.out.println("\n    МЕНЮ ПОШУКУ В МАГАЗИНІ    ");
         System.out.println("1. Пошук за брендом");
         System.out.println("2. Пошук за максимальною ціною");
         System.out.println("3. Пошук за мінімальним обсягом ОЗП (RAM)");
@@ -134,7 +164,7 @@ public class Main {
     }
 
     private static void createNewObjectMenu() {
-        System.out.println("\n  - Оберіть тип товару для додавання   -");
+        System.out.println("\n    Оберіть тип товару для додавання    ");
         System.out.println("1. Смартфон (SmartPhone)");
         System.out.println("2. Кнопковий телефон (KeypadPhone)");
         System.out.println("3. Гнучкий смартфон (FoldableSmartPhone)");
@@ -224,7 +254,7 @@ public class Main {
     }
 
     private static void printAllObjects() {
-        System.out.println("\n  - Асортимент магазину '" + store.getName() + "'   -");
+        System.out.println("\n    Асортимент магазину  " + store.getName() + "'   -");
         if (store.isEmpty()) {
             System.out.println("Магазин порожній.");
         } else {
