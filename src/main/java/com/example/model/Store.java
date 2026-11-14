@@ -17,39 +17,30 @@ public class Store {
         return sortedList;
     }
     
-    // Сортування за ціною (зростання) через анонімний клас Comparator
+// Сортування за ціною (зростання) за допомогою лямбда-виразу
     public ArrayList<StoreItem> getItemsSortedByPrice() {
         ArrayList<StoreItem> sortedList = new ArrayList<>(items);
-        Collections.sort(sortedList, new Comparator<StoreItem>() {
-            @Override
-            public int compare(StoreItem item1, StoreItem item2) {
-                return Double.compare(item1.getPhone().getPrice(), item2.getPhone().getPrice());
-            }
-        });
+        Comparator<StoreItem> priceComparator = (item1, item2) ->
+                Double.compare(item1.getPhone().getPrice(), item2.getPhone().getPrice());
+        Collections.sort(sortedList, priceComparator);
         return sortedList;
     }
 
-    // Сортування за ОЗП (спадання) через анонімний клас Comparator
+    // Сортування за ОЗП (спадання) за допомогою лямбда-виразу
     public ArrayList<StoreItem> getItemsSortedByRamDesc() {
         ArrayList<StoreItem> sortedList = new ArrayList<>(items);
-        Collections.sort(sortedList, new Comparator<StoreItem>() {
-            @Override
-            public int compare(StoreItem item1, StoreItem item2) {
-                return Integer.compare(item2.getPhone().getRamGb(), item1.getPhone().getRamGb());
-            }
-        });
+        Comparator<StoreItem> ramDescComparator = (item1, item2) ->
+                Integer.compare(item2.getPhone().getRamGb(), item1.getPhone().getRamGb());
+        Collections.sort(sortedList, ramDescComparator);
         return sortedList;
     }
 
-    // Сортування за брендом (алфавіт) через анонімний клас Comparator
+    // Сортування за брендом (алфавіт) за допомогою лямбда-виразу
     public ArrayList<StoreItem> getItemsSortedByBrand() {
         ArrayList<StoreItem> sortedList = new ArrayList<>(items);
-        Collections.sort(sortedList, new Comparator<StoreItem>() {
-            @Override
-            public int compare(StoreItem item1, StoreItem item2) {
-                return item1.getPhone().getBrand().compareToIgnoreCase(item2.getPhone().getBrand());
-            }
-        });
+        Comparator<StoreItem> brandComparator = (item1, item2) ->
+                item1.getPhone().getBrand().compareToIgnoreCase(item2.getPhone().getBrand());
+        Collections.sort(sortedList, brandComparator);
         return sortedList;
     }
 
