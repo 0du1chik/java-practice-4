@@ -43,4 +43,27 @@ class ComparatorTest {
         assertEquals("Nokia", sorted.get(1).getPhone().getBrand());
         assertEquals("Samsung", sorted.get(2).getPhone().getBrand());
     }
+
+    @Test
+    void shouldHandleEmptyStoreAndSingleItem() {
+        Store emptyStore = new Store("Empty");
+        assertTrue(emptyStore.getItemsSortedByPrice().isEmpty());
+
+        emptyStore.addNewPhone(new SmartPhone("Sony", "Xperia", 700.0, 8, PhoneType.SMARTPHONE, "Android"), 1);
+        ArrayList<StoreItem> singleSorted = emptyStore.getItemsSortedByBrand();
+        assertEquals(1, singleSorted.size());
+        assertEquals("Sony", singleSorted.get(0).getPhone().getBrand());
+    }
+
+    @Test
+    void shouldHandleEqualValuesGracefully() {
+        Store equalStore = new Store("EqualStore");
+        equalStore.addNewPhone(new SmartPhone("Xiaomi", "14", 500.0, 8, PhoneType.SMARTPHONE, "Android"), 1);
+        equalStore.addNewPhone(new SmartPhone("Realme", "GT", 500.0, 8, PhoneType.SMARTPHONE, "Android"), 1);
+
+        ArrayList<StoreItem> sortedByPrice = equalStore.getItemsSortedByPrice();
+        assertEquals(2, sortedByPrice.size());
+        assertEquals(500.0, sortedByPrice.get(0).getPhone().getPrice());
+        assertEquals(500.0, sortedByPrice.get(1).getPhone().getPrice());
+    }
 }
