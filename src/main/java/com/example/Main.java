@@ -17,7 +17,7 @@ public class Main {
 
         boolean running = true;
         while (running) {
-            System.out.println("\n=== ГОЛОВНЕ МЕНЮ (ПРАКТИЧНА №13 - COMPARABLE) ===");
+            System.out.println("\n=== ГОЛОВНЕ МЕНЮ (ЛАБОРАТОРНА №15 - LAMBDA) ===");
             System.out.println("1. Додати товар у магазин");
             System.out.println("2. Пошук товару в магазині");
             System.out.println("3. Вивести асортимент магазину");
@@ -53,8 +53,8 @@ public class Main {
 
     private static void printHeader() {
         System.out.println("=================================================");
-        System.out.println("    ПРАКТИЧНА РОБОТА №14 - Inner classes         ");
-        System.out.println("             Interface Comparator                ");
+        System.out.println("    ЛАБОРАТОРНА РОБОТА №15 - Lambda expressions  ");
+        System.out.println("         Сортування через лямбда-вирази          ");
         System.out.println("=================================================");
     }
 
