@@ -39,7 +39,8 @@ public class SmartPhone extends Phone {
     @Override
     public String toString() {
         return "SmartPhone{" +
-                "brand='" + getBrand() + '\'' +
+                "uuid=" + getUuid() +
+                ", brand='" + getBrand() + '\'' +
                 ", model='" + getModel() + '\'' +
                 ", price=" + getPrice() +
                 ", ramGb=" + getRamGb() +

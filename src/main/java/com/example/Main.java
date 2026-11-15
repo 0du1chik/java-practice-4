@@ -110,6 +110,7 @@ public class Main {
         System.out.println("1. Пошук за брендом");
         System.out.println("2. Пошук за максимальною ціною");
         System.out.println("3. Пошук за мінімальним обсягом ОЗП (RAM)");
+        System.out.println("4. Пошук за UUID");
         System.out.println("0. Повернутися до головного меню");
         System.out.print("Оберіть критерій пошуку (0-3): ");
 
@@ -124,6 +125,9 @@ public class Main {
                 break;
             case "3":
                 searchByMinRam();
+                break;
+            case "4":
+                searchByUuid();
                 break;
             case "0":
                 System.out.println("Повернення до головного меню.");
@@ -149,6 +153,22 @@ public class Main {
         int minRam = readInt("Введіть мінімальний обсяг ОЗП (ГБ): ");
         ArrayList<StoreItem> results = store.findByMinRam(minRam);
         printSearchResults(results, "ОЗП >= " + minRam + " ГБ");
+    }
+
+    private static void searchByUuid() {
+        String rawUuid = readString("Введіть UUID товару: ");
+        try {
+            java.util.UUID parsedUuid = java.util.UUID.fromString(rawUuid);
+            StoreItem found = store.findByUuid(parsedUuid);
+            if (found != null) {
+                System.out.println("\nЗнайдено об'єкт:");
+                System.out.println(found);
+            } else {
+                System.out.println("Об'єкт із вказаним UUID не знайдено.");
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Помилка: некоректний формат UUID.");
+        }
     }
 
     private static void printSearchResults(ArrayList<StoreItem> results, String criterion) {

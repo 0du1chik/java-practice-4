@@ -36,7 +36,8 @@ public class KeypadPhone extends Phone {
     @Override
     public String toString() {
         return "KeypadPhone{" +
-                "brand='" + getBrand() + '\'' +
+                "uuid=" + getUuid() +
+                ", brand='" + getBrand() + '\'' +
                 ", model='" + getModel() + '\'' +
                 ", price=" + getPrice() +
                 ", ramGb=" + getRamGb() +

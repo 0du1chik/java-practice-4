@@ -33,10 +33,12 @@ public class FoldableSmartPhone extends SmartPhone {
         return Objects.hash(super.hashCode(), isDualScreen);
     }
 
+    
     @Override
     public String toString() {
         return "FoldableSmartPhone{" +
-                "brand='" + getBrand() + '\'' +
+                "uuid=" + getUuid() +
+                ", brand='" + getBrand() + '\'' +
                 ", model='" + getModel() + '\'' +
                 ", price=" + getPrice() +
                 ", ramGb=" + getRamGb() +
