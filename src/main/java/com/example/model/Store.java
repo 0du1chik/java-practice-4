@@ -3,6 +3,7 @@ package com.example.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.UUID;
 
 /**
  * Клас-контейнер Store (Магазин), що підтримує агрегацію товарів та їх кількості.
@@ -42,6 +43,18 @@ public class Store {
                 item1.getPhone().getBrand().compareToIgnoreCase(item2.getPhone().getBrand());
         Collections.sort(sortedList, brandComparator);
         return sortedList;
+    }
+
+    public StoreItem findByUuid(UUID targetUuid) {
+        if (targetUuid == null) {
+            return null;
+        }
+        for (StoreItem item : items) {
+            if (targetUuid.equals(item.getPhone().getUuid())) {
+                return item;
+            }
+        }
+        return null;
     }
 
     public Store(String name) {
