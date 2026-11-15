@@ -39,7 +39,8 @@ public class SecureKeypadPhone extends KeypadPhone {
     @Override
     public String toString() {
         return "SecureKeypadPhone{" +
-                "brand='" + getBrand() + '\'' +
+                "uuid=" + getUuid() +
+                ", brand='" + getBrand() + '\'' +
                 ", model='" + getModel() + '\'' +
                 ", price=" + getPrice() +
                 ", ramGb=" + getRamGb() +

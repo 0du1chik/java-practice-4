@@ -1,12 +1,10 @@
 package com.example.model;
 
 import java.util.Objects;
+import java.util.UUID;
 
-/**
- * Абстрактний базовий клас для ієрархії телефонів.
- * Реалізує інтерфейс Comparable для сортування за брендом та моделлю.
- */
-public abstract class Phone implements Comparable<Phone> {
+public abstract class Phone implements Comparable<Phone>, Identifiable {
+    private UUID uuid;
     private String brand;
     private String model;
     private double price;
@@ -29,6 +27,7 @@ public abstract class Phone implements Comparable<Phone> {
         if (type == null) {
             throw new IllegalArgumentException("Тип телефону не може бути null.");
         }
+        this.uuid = UUID.randomUUID();
         this.brand = brand.trim();
         this.model = model.trim();
         this.price = price;
@@ -36,11 +35,28 @@ public abstract class Phone implements Comparable<Phone> {
         this.type = type;
     }
 
+    @Override
+    public UUID getUuid() {
+        if (this.uuid == null) {
+            this.uuid = UUID.randomUUID();
+        }
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
+
     public String getBrand() { return brand; }
     public String getModel() { return model; }
     public double getPrice() { return price; }
     public int getRamGb() { return ramGb; }
     public PhoneType getType() { return type; }
+
+    public String toShortString() {
+        return String.format("%s: %s %s | UUID: %s",
+                getClass().getSimpleName(), brand, model, getUuid());
+    }
 
     @Override
     public int compareTo(Phone o) {
@@ -71,7 +87,7 @@ public abstract class Phone implements Comparable<Phone> {
 
     @Override
     public String toString() {
-        return String.format("%s{brand='%s', model='%s', price=%.1f, ramGb=%d, type=%s}",
-                getClass().getSimpleName(), brand, model, price, ramGb, type.getDisplayName());
+        return String.format("%s{uuid=%s, brand='%s', model='%s', price=%.1f, ramGb=%d, type=%s}",
+                getClass().getSimpleName(), getUuid(), brand, model, price, ramGb, type.getDisplayName());
     }
 }
