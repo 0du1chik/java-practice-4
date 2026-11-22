@@ -1,5 +1,6 @@
 package com.example.model;
 
+import com.example.exception.InvalidFieldValueException;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,7 +24,7 @@ class PhoneTest {
 
     @Test
     void shouldThrowExceptionWhenInvalidProtectionStandard() {
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(InvalidFieldValueException.class, () -> {
             new SecureKeypadPhone("CAT", "B35", 150.0, 1, PhoneType.FEATURE_PHONE, true, "");
         });
     }
