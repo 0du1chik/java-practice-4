@@ -1,5 +1,6 @@
 package com.example.model;
 
+import com.example.exception.InvalidFieldValueException;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -13,19 +14,19 @@ public abstract class Phone implements Comparable<Phone>, Identifiable {
 
     public Phone(String brand, String model, double price, int ramGb, PhoneType type) {
         if (brand == null || brand.trim().isEmpty()) {
-            throw new IllegalArgumentException("Бренд не може бути порожнім.");
+            throw new InvalidFieldValueException("Бренд не може бути порожнім.");
         }
         if (model == null || model.trim().isEmpty()) {
-            throw new IllegalArgumentException("Модель не може бути порожньою.");
+            throw new InvalidFieldValueException("Модель не може бути порожньою.");
         }
         if (price < 0) {
-            throw new IllegalArgumentException("Ціна не може бути від'ємною.");
+            throw new InvalidFieldValueException("Ціна не може бути від'ємною.");
         }
         if (ramGb <= 0) {
-            throw new IllegalArgumentException("Обсяг ОЗП повинен бути більшим за 0.");
+            throw new InvalidFieldValueException("Обсяг ОЗП повинен бути більшим за 0.");
         }
         if (type == null) {
-            throw new IllegalArgumentException("Тип телефону не може бути null.");
+            throw new InvalidFieldValueException("Тип телефону не може бути null.");
         }
         this.uuid = UUID.randomUUID();
         this.brand = brand.trim();

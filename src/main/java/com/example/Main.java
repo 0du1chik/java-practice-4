@@ -1,5 +1,7 @@
 package com.example;
 
+import com.example.exception.InvalidFieldValueException;
+import com.example.exception.ObjectNotFoundException;
 import com.example.model.*;
 import com.example.util.FileManager;
 
@@ -154,7 +156,7 @@ public class Main {
             } else {
                 System.out.println("Помилка: об'єкт не знайдено в магазині.");
             }
-        } catch (IllegalArgumentException e) {
+        } catch (InvalidFieldValueException | ObjectNotFoundException e) {
             System.out.println("Помилка модифікації: " + e.getMessage());
         }
     }
@@ -186,12 +188,12 @@ public class Main {
         boolean confirm = readBoolean("Підтвердити видалення '" + targetPhone.getBrand() + " " + targetPhone.getModel() + "'? (1 - Так, 0 - Ні): ");
 
         if (confirm) {
-            boolean deleted = store.delete(targetPhone);
-            if (deleted) {
+            try {
+                store.delete(targetPhone);
                 FileManager.saveToJson(store, FILE_NAME);
                 System.out.println("Товар успішно видалено з магазину!");
-            } else {
-                System.out.println("Помилка: об'єкт не знайдено.");
+            } catch (InvalidFieldValueException | ObjectNotFoundException e) {
+                System.out.println("Помилка видалення: " + e.getMessage());
             }
         } else {
             System.out.println("Видалення скасовано користувачем.");
@@ -354,8 +356,8 @@ public class Main {
                 default:
                     System.out.println("Некоректний вибір типу об'єкта.");
             }
-        } catch (IllegalArgumentException e) {
-            System.out.println("Помилка створення об'єкта: " + e.getMessage());
+        } catch (InvalidFieldValueException e) {
+            System.out.println("Помилка валідації даних: " + e.getMessage());
         }
     }
 

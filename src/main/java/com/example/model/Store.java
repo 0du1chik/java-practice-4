@@ -1,5 +1,7 @@
 package com.example.model;
 
+import com.example.exception.InvalidFieldValueException;
+import com.example.exception.ObjectNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -59,7 +61,7 @@ public class Store {
 
     public Store(String name) {
         if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("Назва магазину не може бути порожньою.");
+            throw new InvalidFieldValueException("Назва магазину не може бути порожньою.");
         }
         this.name = name.trim();
         this.items = new ArrayList<>();
@@ -80,7 +82,7 @@ public class Store {
      */
     public boolean update(Phone existingObject, Phone newObject) {
         if (existingObject == null || newObject == null) {
-            return false;
+            throw new InvalidFieldValueException("Об'єкти для оновлення не можуть бути null.");
         }
         for (StoreItem item : items) {
             if (item.getPhone().equals(existingObject)) {
@@ -89,7 +91,7 @@ public class Store {
                 return true;
             }
         }
-        return false;
+        throw new ObjectNotFoundException("Об'єкт '" + existingObject.getBrand() + " " + existingObject.getModel() + "' не знайдено для оновлення.");
     }
 
     /**
@@ -97,7 +99,7 @@ public class Store {
      */
     public boolean delete(Phone existingObject) {
         if (existingObject == null) {
-            return false;
+            throw new InvalidFieldValueException("Об'єкт для видалення не може бути null.");
         }
         for (int i = 0; i < items.size(); i++) {
             if (items.get(i).getPhone().equals(existingObject)) {
@@ -105,7 +107,7 @@ public class Store {
                 return true;
             }
         }
-        return false;
+        throw new ObjectNotFoundException("Об'єкт '" + existingObject.getBrand() + " " + existingObject.getModel() + "' не знайдено для видалення.");
     }
 
     /**
@@ -113,10 +115,10 @@ public class Store {
      */
     public void addNewPhone(Phone ph, int quantity) {
         if (ph == null) {
-            throw new IllegalArgumentException("Об'єкт Phone не може бути null.");
+            throw new InvalidFieldValueException("Об'єкт Phone не може бути null.");
         }
         if (quantity <= 0) {
-            throw new IllegalArgumentException("Кількість повинна бути більше 0.");
+            throw new InvalidFieldValueException("Кількість повинна бути більше 0.");
         }
 
         for (StoreItem item : items) {

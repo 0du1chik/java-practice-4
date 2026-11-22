@@ -1,5 +1,6 @@
 package com.example.model;
 
+import com.example.exception.InvalidFieldValueException;
 import java.util.Objects;
 
 public class StoreItem implements Comparable<StoreItem> {
@@ -8,10 +9,10 @@ public class StoreItem implements Comparable<StoreItem> {
 
     public StoreItem(Phone phone, int quantity) {
         if (phone == null) {
-            throw new IllegalArgumentException("Телефон не може бути null.");
+            throw new InvalidFieldValueException("Телефон не може бути null.");
         }
         if (quantity <= 0) {
-            throw new IllegalArgumentException("Кількість товару повинна бути більшою за 0.");
+            throw new InvalidFieldValueException("Кількість товару повинна бути більшою за 0.");
         }
         this.phone = phone;
         this.quantity = quantity;
@@ -19,7 +20,7 @@ public class StoreItem implements Comparable<StoreItem> {
 
     public void setPhone(Phone phone) {
         if (phone == null) {
-            throw new IllegalArgumentException("Об'єкт Phone не може бути null.");
+            throw new InvalidFieldValueException("Об'єкт Phone не може бути null.");
         }
         this.phone = phone;
     }
@@ -30,7 +31,7 @@ public class StoreItem implements Comparable<StoreItem> {
 
     public void addQuantity(int amount) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("Кількість для додавання повинна бути більшою за 0.");
+            throw new InvalidFieldValueException("Кількість для дodавання повинна бути більшою за 0.");
         }
         this.quantity += amount;
     }
