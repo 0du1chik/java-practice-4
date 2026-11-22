@@ -1,5 +1,6 @@
 package com.example.model;
 
+import com.example.exception.InvalidFieldValueException;
 import java.util.Objects;
 
 /**
@@ -19,7 +20,7 @@ public class SecureKeypadPhone extends KeypadPhone {
 
     public void setProtectionStandard(String protectionStandard) {
         if (protectionStandard == null || protectionStandard.trim().isEmpty()) {
-            throw new IllegalArgumentException("Стандарт захисту не може бути порожнім.");
+            throw new InvalidFieldValueException("Стандарт захисту не може бути порожнім.");
         }
         this.protectionStandard = protectionStandard.trim();
     }

@@ -1,5 +1,6 @@
 package com.example.gui;
 
+import com.example.exception.InvalidFieldValueException;
 import com.example.model.*;
 import com.example.util.FileManager;
 import javafx.application.Application;
@@ -10,7 +11,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-
 import java.util.UUID;
 
 public class MainApp extends Application {
@@ -24,7 +24,6 @@ public class MainApp extends Application {
         shortItemsList = FXCollections.observableArrayList();
         refreshShortList();
 
-        // --- Блок 1: Форма додавання об'єкта ---
         ComboBox<String> typeBox = new ComboBox<>();
         typeBox.getItems().addAll("SmartPhone", "KeypadPhone", "FoldableSmartPhone", "SecureKeypadPhone");
         typeBox.setValue("SmartPhone");
@@ -84,7 +83,7 @@ public class MainApp extends Application {
                 extraField.clear();
             } catch (NumberFormatException ex) {
                 addStatusLabel.setText("Помилка: ціна та ОЗП мають бути числами.");
-            } catch (IllegalArgumentException ex) {
+            } catch (InvalidFieldValueException ex) {
                 addStatusLabel.setText("Помилка: " + ex.getMessage());
             }
         });
@@ -98,11 +97,9 @@ public class MainApp extends Application {
         formGrid.add(addButton, 0, 3);
         formGrid.add(addStatusLabel, 1, 3, 3, 1);
 
-        // --- Блок 2: Короткий список колекції ---
         ListView<String> listView = new ListView<>(shortItemsList);
         listView.setPrefHeight(180);
 
-        // Автопідстановка UUID у поле пошуку при кліку по елементу списку (зручно для демонстрації)
         TextField searchUuidField = new TextField();
         searchUuidField.setPromptText("Введіть UUID для пошуку...");
         searchUuidField.setPrefWidth(320);
@@ -114,7 +111,6 @@ public class MainApp extends Application {
             }
         });
 
-        // --- Блок 3: Пошук за UUID та повний вивід ---
         Button searchButton = new Button("Знайти");
         TextArea fullInfoArea = new TextArea();
         fullInfoArea.setEditable(false);
@@ -135,7 +131,7 @@ public class MainApp extends Application {
                 } else {
                     fullInfoArea.setText("Результат: об'єкт із UUID [" + targetUuid + "] не знайдено.");
                 }
-            } catch (IllegalArgumentException ex) {
+            } catch (InvalidFieldValueException ex) {
                 fullInfoArea.setText("Помилка формату: введений рядок не є валідним UUID.");
             }
         });

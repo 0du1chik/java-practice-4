@@ -1,5 +1,7 @@
 package com.example;
 
+import com.example.exception.InvalidFieldValueException;
+import com.example.exception.ObjectNotFoundException;
 import com.example.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,13 +36,13 @@ class UpdateDeleteTest {
     }
 
     @Test
-    void shouldReturnFalseWhenUpdatingNonExistentOrNullPhone() {
+    void shouldThrowExceptionsWhenUpdatingNonExistentOrNullPhone() {
         SmartPhone unknown = new SmartPhone("Sony", "Xperia", 700.0, 8, PhoneType.SMARTPHONE, "Android");
         SmartPhone replacement = new SmartPhone("Sony", "Xperia 1 V", 900.0, 12, PhoneType.SMARTPHONE, "Android");
 
-        assertFalse(store.update(unknown, replacement));
-        assertFalse(store.update(null, replacement));
-        assertFalse(store.update(iphone, null));
+        assertThrows(ObjectNotFoundException.class, () -> store.update(unknown, replacement));
+        assertThrows(InvalidFieldValueException.class, () -> store.update(null, replacement));
+        assertThrows(InvalidFieldValueException.class, () -> store.update(iphone, null));
     }
 
     @Test
@@ -53,12 +55,12 @@ class UpdateDeleteTest {
     }
 
     @Test
-    void shouldReturnFalseWhenDeletingNonExistentOrFromEmptyStore() {
+    void shouldThrowExceptionsWhenDeletingNonExistentOrFromEmptyStore() {
         SmartPhone unknown = new SmartPhone("LG", "Velvet", 400.0, 6, PhoneType.SMARTPHONE, "Android");
-        assertFalse(store.delete(unknown));
-        assertFalse(store.delete(null));
+        assertThrows(ObjectNotFoundException.class, () -> store.delete(unknown));
+        assertThrows(InvalidFieldValueException.class, () -> store.delete(null));
 
         Store emptyStore = new Store("Empty");
-        assertFalse(emptyStore.delete(iphone));
+        assertThrows(ObjectNotFoundException.class, () -> emptyStore.delete(iphone));
     }
 }

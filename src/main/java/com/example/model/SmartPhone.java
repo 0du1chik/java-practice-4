@@ -1,5 +1,6 @@
 package com.example.model;
 
+import com.example.exception.InvalidFieldValueException;
 import java.util.Objects;
 
 /**
@@ -19,7 +20,7 @@ public class SmartPhone extends Phone {
 
     public void setOperatingSystem(String operatingSystem) {
         if (operatingSystem == null || operatingSystem.trim().isEmpty()) {
-            throw new IllegalArgumentException("Операційна система не може бути порожньою.");
+            throw new InvalidFieldValueException("Операційна система не може бути порожньою.");
         }
         this.operatingSystem = operatingSystem.trim();
     }
