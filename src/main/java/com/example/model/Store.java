@@ -72,6 +72,41 @@ public class Store {
     public ArrayList<StoreItem> getItems() {
         return items;
     }
+    
+    /**
+     * Оновлює існуючий телефон у магазині на новий об'єкт.
+     * Зберігає UUID попереднього об'єкта, якщо в нового він не заданий вручну,
+     * та залишає поточну кількість на складі.
+     */
+    public boolean update(Phone existingObject, Phone newObject) {
+        if (existingObject == null || newObject == null) {
+            return false;
+        }
+        for (StoreItem item : items) {
+            if (item.getPhone().equals(existingObject)) {
+                newObject.setUuid(existingObject.getUuid());
+                item.setPhone(newObject);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Видаляє позицію з магазину за об'єктом Phone.
+     */
+    public boolean delete(Phone existingObject) {
+        if (existingObject == null) {
+            return false;
+        }
+        for (int i = 0; i < items.size(); i++) {
+            if (items.get(i).getPhone().equals(existingObject)) {
+                items.remove(i);
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * Додає телефон у магазин. Якщо товар вже є, підсумовує кількість.

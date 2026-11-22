@@ -17,7 +17,15 @@ public class StoreItem implements Comparable<StoreItem> {
         this.quantity = quantity;
     }
 
+    public void setPhone(Phone phone) {
+        if (phone == null) {
+            throw new IllegalArgumentException("Об'єкт Phone не може бути null.");
+        }
+        this.phone = phone;
+    }
+
     public Phone getPhone() { return phone; }
+    
     public int getQuantity() { return quantity; }
 
     public void addQuantity(int amount) {

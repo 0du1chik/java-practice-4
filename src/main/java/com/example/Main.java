@@ -5,6 +5,7 @@ import com.example.util.FileManager;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.UUID;
 
 public class Main {
     private static final String FILE_NAME = "input.json";
@@ -17,13 +18,15 @@ public class Main {
 
         boolean running = true;
         while (running) {
-            System.out.println("\n=== ГОЛОВНЕ МЕНЮ (ЛАБОРАТОРНА №15 - LAMBDA) ===");
+            System.out.println("\n=== ГОЛОВНЕ МЕНЮ (ЛАБОРАТОРНА №17 - UPDATE & DELETE) ===");
             System.out.println("1. Додати товар у магазин");
             System.out.println("2. Пошук товару в магазині");
-            System.out.println("3. Вивести асортимент магазину");
-            System.out.println("4. Вивести відсортовану інформацію про всі товари");
-            System.out.println("5. Завершити роботу програми");
-            System.out.print("Оберіть пункт (1-5): ");
+            System.out.println("3. Модифікувати товар");
+            System.out.println("4. Видалити товар");
+            System.out.println("5. Вивести асортимент магазину");
+            System.out.println("6. Вивести відсортовану інформацію про всі товари");
+            System.out.println("0. Завершити роботу програми");
+            System.out.print("Оберіть пункт (0-6): ");
 
             String choice = scanner.nextLine().trim();
 
@@ -35,27 +38,164 @@ public class Main {
                     searchMenu();
                     break;
                 case "3":
-                    printAllObjects();
+                    modifyObjectMenu();
                     break;
                 case "4":
-                    printSortedObjects();
+                    deleteObjectMenu();
                     break;
                 case "5":
+                    printAllObjects();
+                    break;
+                case "6":
+                    printSortedObjects();
+                    break;
+                case "0":
                     running = false;
                     FileManager.saveToJson(store, FILE_NAME);
                     System.out.println("Програму завершено. До побачення!");
                     break;
                 default:
-                    System.out.println("Помилка: Некоректний вибір. Введіть число від 1 до 5.");
+                    System.out.println("Помилка: Некоректний вибір. Введіть число від 0 до 6.");
             }
         }
     }
 
     private static void printHeader() {
         System.out.println("=================================================");
-        System.out.println("    ЛАБОРАТОРНА РОБОТА №15 - Lambda expressions  ");
-        System.out.println("         Сортування через лямбда-вирази          ");
+        System.out.println(" ЛАБОРАТОРНА РОБОТА №17 - Modification & Deletion");
+        System.out.println("   Модифікація та видалення об'єктів у колекції  ");
         System.out.println("=================================================");
+    }
+
+    private static void modifyObjectMenu() {
+        if (store.isEmpty()) {
+            System.out.println("\nМагазин порожній. Модифікація неможлива.");
+            return;
+        }
+
+        System.out.println("\n    Оберіть товар для модифікації    ");
+        ArrayList<StoreItem> items = store.getItems();
+        for (int i = 0; i < items.size(); i++) {
+            System.out.println((i + 1) + ". " + items.get(i));
+        }
+        System.out.println("0. Повернутися до головного меню");
+
+        int index = readInt("Ваш вибір (0-" + items.size() + "): ");
+        if (index == 0) {
+            System.out.println("Модифікацію скасовано.");
+            return;
+        }
+        if (index < 1 || index > items.size()) {
+            System.out.println("Помилка: об'єкт із таким номером не знайдено.");
+            return;
+        }
+
+        Phone oldPhone = items.get(index - 1).getPhone();
+
+        String brand = oldPhone.getBrand();
+        String model = oldPhone.getModel();
+        double price = oldPhone.getPrice();
+        int ram = oldPhone.getRamGb();
+
+        System.out.println("\n    Оберіть атрибут для зміни    ");
+        System.out.println("1. Бренд (поточний: " + brand + ")");
+        System.out.println("2. Модель (поточна: " + model + ")");
+        System.out.println("3. Ціна (поточна: " + price + "$)");
+        System.out.println("4. Обсяг ОЗП (поточний: " + ram + " ГБ)");
+        System.out.println("0. Скасувати");
+
+        int attrChoice = readInt("Ваш вибір (0-4): ");
+        if (attrChoice == 0) {
+            System.out.println("Модифікацію скасовано.");
+            return;
+        }
+
+        try {
+            switch (attrChoice) {
+                case 1:
+                    brand = readString("Введіть новий бренд: ");
+                    break;
+                case 2:
+                    model = readString("Введіть нову модель: ");
+                    break;
+                case 3:
+                    price = readDouble("Введіть нову ціну ($): ");
+                    break;
+                case 4:
+                    ram = readInt("Введіть новий обсяг ОЗП (ГБ): ");
+                    break;
+                default:
+                    System.out.println("Некоректний вибір атрибута.");
+                    return;
+            }
+
+            Phone updatedPhone;
+            if (oldPhone instanceof FoldableSmartPhone) {
+                FoldableSmartPhone f = (FoldableSmartPhone) oldPhone;
+                updatedPhone = new FoldableSmartPhone(brand, model, price, ram, f.getType(), f.getOperatingSystem(), f.isDualScreen());
+            } else if (oldPhone instanceof SmartPhone) {
+                SmartPhone s = (SmartPhone) oldPhone;
+                updatedPhone = new SmartPhone(brand, model, price, ram, s.getType(), s.getOperatingSystem());
+            } else if (oldPhone instanceof SecureKeypadPhone) {
+                SecureKeypadPhone sec = (SecureKeypadPhone) oldPhone;
+                updatedPhone = new SecureKeypadPhone(brand, model, price, ram, sec.getType(), sec.isHasTorch(), sec.getProtectionStandard());
+            } else if (oldPhone instanceof KeypadPhone) {
+                KeypadPhone k = (KeypadPhone) oldPhone;
+                updatedPhone = new KeypadPhone(brand, model, price, ram, k.getType(), k.isHasTorch());
+            } else {
+                System.out.println("Помилка: невідомий тип об'єкта.");
+                return;
+            }
+
+            boolean updated = store.update(oldPhone, updatedPhone);
+            if (updated) {
+                FileManager.saveToJson(store, FILE_NAME);
+                System.out.println("Товар успішно модифіковано!");
+            } else {
+                System.out.println("Помилка: об'єкт не знайдено в магазині.");
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Помилка модифікації: " + e.getMessage());
+        }
+    }
+
+    private static void deleteObjectMenu() {
+        if (store.isEmpty()) {
+            System.out.println("\nМагазин порожній. Видалення неможливе.");
+            return;
+        }
+
+        System.out.println("\n    Оберіть товар для видалення    ");
+        ArrayList<StoreItem> items = store.getItems();
+        for (int i = 0; i < items.size(); i++) {
+            System.out.println((i + 1) + ". " + items.get(i));
+        }
+        System.out.println("0. Повернутися до головного меню");
+
+        int index = readInt("Ваш вибір (0-" + items.size() + "): ");
+        if (index == 0) {
+            System.out.println("Видалення скасовано.");
+            return;
+        }
+        if (index < 1 || index > items.size()) {
+            System.out.println("Помилка: об'єкт із таким номером не знайдено.");
+            return;
+        }
+
+        Phone targetPhone = items.get(index - 1).getPhone();
+        boolean confirm = readBoolean("Підтвердити видалення '" + targetPhone.getBrand() + " " + targetPhone.getModel() + "'? (1 - Так, 0 - Ні): ");
+
+        if (confirm) {
+            boolean deleted = store.delete(targetPhone);
+            if (deleted) {
+                FileManager.saveToJson(store, FILE_NAME);
+                System.out.println("Товар успішно видалено з магазину!");
+            } else {
+                System.out.println("Помилка: об'єкт не знайдено.");
+            }
+        } else {
+            System.out.println("Видалення скасовано користувачем.");
+        }
     }
 
     private static void printSortedObjects() {
@@ -112,7 +252,7 @@ public class Main {
         System.out.println("3. Пошук за мінімальним обсягом ОЗП (RAM)");
         System.out.println("4. Пошук за UUID");
         System.out.println("0. Повернутися до головного меню");
-        System.out.print("Оберіть критерій пошуку (0-3): ");
+        System.out.print("Оберіть критерій пошуку (0-4): ");
 
         String choice = scanner.nextLine().trim();
 
@@ -158,7 +298,7 @@ public class Main {
     private static void searchByUuid() {
         String rawUuid = readString("Введіть UUID товару: ");
         try {
-            java.util.UUID parsedUuid = java.util.UUID.fromString(rawUuid);
+            UUID parsedUuid = UUID.fromString(rawUuid);
             StoreItem found = store.findByUuid(parsedUuid);
             if (found != null) {
                 System.out.println("\nЗнайдено об'єкт:");
@@ -274,7 +414,7 @@ public class Main {
     }
 
     private static void printAllObjects() {
-        System.out.println("\n    Асортимент магазину  " + store.getName() + "'   -");
+        System.out.println("\n    Асортимент магазину '" + store.getName() + "'   -");
         if (store.isEmpty()) {
             System.out.println("Магазин порожній.");
         } else {
